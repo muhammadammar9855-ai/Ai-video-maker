@@ -58,4 +58,4 @@ function startSlideshow() {
     currentIndex = (currentIndex + 1) % allImgs.length;
     allImgs[currentIndex].classList.add("active");
   }, 2000);
-}48967787-542b13060f7e2c0a71eca0f92 
+48967787-542b13060f7e2c0a71eca0f92 
