@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Video Maker</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+  <h1>🎬 AI Video Maker</h1>
+  <p>Koi bhi topic likho, hum Pixabay se related images le kar slideshow video bana denge.</p>
+
+  <input type="text" id="topicInput" placeholder="Topic likho, jaise: nature, city, food">
+  <button id="generateBtn">Video Banao</button>
+
+  <div id="status"></div>
+
+  <div id="slideshow" class="slideshow"></div>
+
+  <canvas id="videoCanvas" style="display:none;"></canvas>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
