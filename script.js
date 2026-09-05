@@ -1,4 +1,3 @@
-// ⚠️ Apni Pixabay API key yahan daalo
 const PIXABAY_API_KEY = "48967787-542b13060f7e2c0a71eca0f92";
 
 const topicInput = document.getElementById("topicInput");
@@ -6,9 +5,8 @@ const generateBtn = document.getElementById("generateBtn");
 const statusDiv = document.getElementById("status");
 const slideshow = document.getElementById("slideshow");
 
-let images = [];
+let videos = [];
 let currentIndex = 0;
-let slideInterval;
 
 generateBtn.addEventListener("click", async () => {
   const topic = topicInput.value.trim();
@@ -17,33 +15,40 @@ generateBtn.addEventListener("click", async () => {
     return;
   }
 
-  statusDiv.textContent = "Images dhoondi ja rahi hain...";
+  statusDiv.textContent = "Videos dhoondi ja rahi hain...";
   slideshow.innerHTML = "";
-  clearInterval(slideInterval);
+  videos = [];
+  currentIndex = 0;
 
   try {
     const response = await fetch(
-      `https://pixabay.com/api/?key=${PIXABAY_API_KEY}&q=${encodeURIComponent(topic)}&image_type=photo&per_page=15`
+      `https://pixabay.com/api/videos/?key=${PIXABAY_API_KEY}&q=${encodeURIComponent(topic)}&per_page=10`
     );
     const data = await response.json();
 
     if (!data.hits || data.hits.length === 0) {
-      statusDiv.textContent = "Koi images nahi mili, dusra topic try karo.";
+      statusDiv.textContent = "Koi videos nahi mile, dusra topic try karo.";
       return;
     }
 
-    images = data.hits.map(hit => hit.webformatURL);
-    currentIndex = 0;
+    videos = data.hits.map(hit => hit.videos.medium.url);
 
-    images.forEach((imgUrl, i) => {
-      const img = document.createElement("img");
-      img.src = imgUrl;
-      if (i === 0) img.classList.add("active");
-      slideshow.appendChild(img);
-    });
+    const videoTag = document.createElement("video");
+    videoTag.id = "mainVideo";
+    videoTag.style.width = "100%";
+    videoTag.style.height = "100%";
+    videoTag.style.objectFit = "cover";
+    videoTag.muted = false;
+    videoTag.autoplay = true;
+    slideshow.appendChild(videoTag);
 
-    statusDiv.textContent = `Video ban gaya! (${images.length} images ka slideshow)`;
-    startSlideshow();
+    statusDiv.textContent = `Video ban gaya! (${videos.length} clips mil gaye)`;
+
+    // Voice-over script banao
+    const script = `Ye video ${topic} ke baare mein hai. Umeed hai aapko ye pasand aayega.`;
+    speakText(script);
+
+    playVideosInSequence(videoTag);
 
   } catch (error) {
     console.error(error);
@@ -51,11 +56,24 @@ generateBtn.addEventListener("click", async () => {
   }
 });
 
-function startSlideshow() {
-  const allImgs = slideshow.querySelectorAll("img");
-  slideInterval = setInterval(() => {
-    allImgs[currentIndex].classList.remove("active");
-    currentIndex = (currentIndex + 1) % allImgs.length;
-    allImgs[currentIndex].classList.add("active");
-  }, 2000);
-} 
+function playVideosInSequence(videoTag) {
+  videoTag.src = videos[currentIndex];
+  videoTag.play();
+
+  videoTag.onended = () => {
+    currentIndex = (currentIndex + 1) % videos.length;
+    videoTag.src = videos[currentIndex];
+    videoTag.play();
+  };
+}
+
+function speakText(text) {
+  if (!("speechSynthesis" in window)) {
+    console.warn("Is browser mein voice-over support nahi hai.");
+    return;
+  }
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "ur-PK";
+  utterance.rate = 0.9;
+  speechSynthesis.speak(utterance);
+}
