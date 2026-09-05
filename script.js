@@ -1,5 +1,5 @@
 // ⚠️ Apni Pixabay API key yahan daalo
-const PIXABAY_API_KEY = 48967787-542b13060f7e2c0a71eca0f92
+const PIXABAY_API_KEY = "48967787-542b13060f7e2c0a71eca0f92";
 
 const topicInput = document.getElementById("topicInput");
 const generateBtn = document.getElementById("generateBtn");
